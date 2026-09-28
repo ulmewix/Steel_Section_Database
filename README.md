@@ -52,19 +52,25 @@ are published where a documented catalogue convention exists, otherwise they are
 Dependencies point one way only: consumers → section properties → data. Geometry data never contain design values, and the
 engine never imports tooling, tests or cross-check code (enforced by `tests/test_repo.py`).
 
-## Repository layout
+## Project structure
 
-| Path | Content |
-|---|---|
-| `data/<family>/<ID>.csv`, `<ID>.toml` | primary geometry and series metadata (`data/ipe/IPE.*`, `data/upn/UPN.*`, `data/shs/SHS-HF.*`, `data/l/L-EQ.*`, `data/flat/FLAT.*`, …) |
-| `schema/` | JSON Schemas: series metadata, rows per shape, web JSON output |
-| `section_properties/` | the engine (primitives, contour, shapes, integrals, elastic, plastic, torsion, export) |
-| `generated/properties/<ID>.csv` | audit table in catalogue units (generated, committed) |
-| `generated/web/<ID>.json`, `index.json` | web JSON in mm units (generated, committed); public contract `schema_version` 1 ([docs/CONVENTIONS.md](docs/CONVENTIONS.md#web-json-contract)) |
-| `tools/cli.py` | `fmt`, `check`, `build` |
-| `tests/` | test suite, independent references (`angle_reference.py`, `flat_reference.py`) and tolerances |
-| `crosscheck/` | optional FEM cross-check (informative, never used for published values) |
-| `docs/` | data model and conventions |
+```
+Steel_Section_Database/
+├── data/                 Canonical profile geometry and series metadata
+├── section_properties/   Section-property calculation engine
+├── schema/               JSON schemas for canonical and web data
+├── generated/
+│   ├── properties/       Generated audit tables
+│   └── web/              JSON contract for consumer applications
+├── tests/                Core tests and independent references
+├── crosscheck/           Optional FEM cross-checks
+├── tools/                CLI: fmt, check, build
+├── docs/                 Data model and calculation conventions
+└── .github/workflows/    Continuous integration
+```
+
+Each series `<ID>` is stored as `data/<family>/<ID>.csv` + `<ID>.toml`; `build` turns it into
+`generated/properties/<ID>.csv` (catalogue units) and `generated/web/<ID>.json` (mm units, listed in `index.json`).
 
 ## Usage
 
@@ -114,3 +120,7 @@ a readable diff. It is a derived, clearly marked output, never edited by hand.
 [`schema/web.schema.json`](schema/web.schema.json) and versioned by `schema_version` (currently 1). Consumers should validate
 against the schema, use only `supported` values and fail explicitly on `null` (unsupported) — never substitute a value.
 Details: [docs/CONVENTIONS.md](docs/CONVENTIONS.md#web-json-contract).
+
+## Licensing
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE).
