@@ -1,0 +1,2402 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "web.schema.json",
+  "title": "Generated web JSON of one profile series (generated/web/<SERIES>.json)",
+  "description": "Every property has a status. `supported`: numeric value and approved method id. `unsupported`: value null and method null. The allOf rules enforce value null <=> status unsupported for every property of every profile, the corner-radius rule for SHS/RHS, and the convention methods registered for each shape.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series",
+    "title",
+    "shape",
+    "standard",
+    "process",
+    "units",
+    "properties_meta",
+    "profiles"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Version of this web JSON contract. Incremented with every change of this schema other than its descriptions and with every change of the index.json layout (docs/CONVENTIONS.md).",
+      "const": 1
+    },
+    "series": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "shape": {
+      "enum": [
+        "I",
+        "SHS",
+        "RHS",
+        "CHS",
+        "U",
+        "U_TAPERED",
+        "I_TAPERED",
+        "L_EQ",
+        "L",
+        "FLAT"
+      ]
+    },
+    "standard": {
+      "type": "string"
+    },
+    "process": {
+      "enum": [
+        "hot_rolled",
+        "hot_finished",
+        "cold_formed"
+      ]
+    },
+    "corner_radii": {
+      "description": "Series rule for the corner radii of SHS/RHS (see docs/DATA_MODEL.md); the resolved ro/ri are in each profile's geometry.",
+      "enum": [
+        "EN10210-2",
+        "EN10219-2"
+      ]
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "length",
+        "slope_pct",
+        "A",
+        "mass_per_length",
+        "perimeter",
+        "ys",
+        "zs",
+        "Iy",
+        "Wel_y",
+        "Wel_y_bottom",
+        "Wel_y_top",
+        "Wpl_y",
+        "i_y",
+        "Iz",
+        "Wel_z",
+        "Wel_z_left",
+        "Wel_z_right",
+        "Wpl_z",
+        "i_z",
+        "Iyz",
+        "Iu",
+        "Iv",
+        "alpha",
+        "i_u",
+        "i_v",
+        "It",
+        "Wt",
+        "Iw",
+        "ym"
+      ],
+      "properties": {
+        "length": {
+          "const": "mm"
+        },
+        "slope_pct": {
+          "const": "%"
+        },
+        "A": {
+          "const": "mm2"
+        },
+        "mass_per_length": {
+          "const": "kg/m"
+        },
+        "perimeter": {
+          "const": "mm"
+        },
+        "ys": {
+          "const": "mm"
+        },
+        "zs": {
+          "const": "mm"
+        },
+        "Iy": {
+          "const": "mm4"
+        },
+        "Wel_y": {
+          "const": "mm3"
+        },
+        "Wel_y_bottom": {
+          "const": "mm3"
+        },
+        "Wel_y_top": {
+          "const": "mm3"
+        },
+        "Wpl_y": {
+          "const": "mm3"
+        },
+        "i_y": {
+          "const": "mm"
+        },
+        "Iz": {
+          "const": "mm4"
+        },
+        "Wel_z": {
+          "const": "mm3"
+        },
+        "Wel_z_left": {
+          "const": "mm3"
+        },
+        "Wel_z_right": {
+          "const": "mm3"
+        },
+        "Wpl_z": {
+          "const": "mm3"
+        },
+        "i_z": {
+          "const": "mm"
+        },
+        "Iyz": {
+          "const": "mm4"
+        },
+        "Iu": {
+          "const": "mm4"
+        },
+        "Iv": {
+          "const": "mm4"
+        },
+        "alpha": {
+          "const": "deg"
+        },
+        "i_u": {
+          "const": "mm"
+        },
+        "i_v": {
+          "const": "mm"
+        },
+        "It": {
+          "const": "mm4"
+        },
+        "Wt": {
+          "const": "mm3"
+        },
+        "Iw": {
+          "const": "mm6"
+        },
+        "ym": {
+          "const": "mm"
+        }
+      },
+      "description": "Units of the values: every geometry key is a length in mm except slope_pct (the slope of sloped flanges, 100·tan α, in %); properties as listed (alpha: the angle of the principal axis u in degrees)."
+    },
+    "properties_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "A",
+        "mass_per_length",
+        "perimeter",
+        "ys",
+        "zs",
+        "Iy",
+        "Wel_y",
+        "Wel_y_bottom",
+        "Wel_y_top",
+        "Wpl_y",
+        "i_y",
+        "Iz",
+        "Wel_z",
+        "Wel_z_left",
+        "Wel_z_right",
+        "Wpl_z",
+        "i_z",
+        "Iyz",
+        "Iu",
+        "Iv",
+        "alpha",
+        "i_u",
+        "i_v",
+        "It",
+        "Wt",
+        "Iw",
+        "ym"
+      ],
+      "patternProperties": {
+        "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym)$": {
+          "$ref": "#/$defs/meta"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "It": {
+                "required": [
+                  "status",
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_CHS_EXACT_V1",
+                      "IT_HOLLOW_EN_V1",
+                      "IT_ROLLED_I_FILLET_V1",
+                      "IT_ROLLED_L_FILLET_V1",
+                      "IT_ROLLED_U_FILLET_V1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "Wt": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "Wt": {
+                "required": [
+                  "status",
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_CHS_EXACT_V1",
+                      "IT_HOLLOW_EN_V1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "Iw": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "Iw": {
+                "required": [
+                  "status",
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IW_I_FLANGES_V1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "ym": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": false
+        }
+      ],
+      "description": "Status per property. A supported convention-dependent property (It, Wt, Iw, ym) must name a method registered for the shape."
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "designation",
+          "geometry",
+          "properties"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Z]+(-[A-Z]+)?/.+$"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "geometry": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "A",
+              "mass_per_length",
+              "perimeter",
+              "ys",
+              "zs",
+              "Iy",
+              "Wel_y",
+              "Wel_y_bottom",
+              "Wel_y_top",
+              "Wpl_y",
+              "i_y",
+              "Iz",
+              "Wel_z",
+              "Wel_z_left",
+              "Wel_z_right",
+              "Wpl_z",
+              "i_z",
+              "Iyz",
+              "Iu",
+              "Iv",
+              "alpha",
+              "i_u",
+              "i_v",
+              "It",
+              "Wt",
+              "Iw",
+              "ym"
+            ],
+            "patternProperties": {
+              "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym)$": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "method"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "supported",
+            "unsupported"
+          ]
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "rho_kg_m3": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+      "if": {
+        "properties": {
+          "status": {
+            "const": "unsupported"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "method": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "A": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "A": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "A": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "mass_per_length": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "mass_per_length": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "mass_per_length": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "perimeter": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "perimeter": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "perimeter": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "ys": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "ys": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "ys": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "zs": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "zs": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "zs": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iy": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iy": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iy": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_y": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_y_bottom": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y_bottom": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y_bottom": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_y_top": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y_top": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_y_top": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wpl_y": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wpl_y": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wpl_y": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "i_y": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_y": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_y": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iz": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iz": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iz": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_z": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_z_left": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z_left": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z_left": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wel_z_right": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z_right": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wel_z_right": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wpl_z": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wpl_z": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wpl_z": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "i_z": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_z": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_z": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iyz": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iyz": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iyz": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iu": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iu": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iu": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iv": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iv": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iv": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "alpha": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "alpha": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "alpha": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "i_u": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_u": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_u": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "i_v": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_v": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "i_v": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "It": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "It": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Wt": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wt": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Wt": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Iw": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iw": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Iw": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "ym": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "ym": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "ym": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "enum": [
+              "SHS",
+              "RHS"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "corner_radii"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "corner_radii"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "I"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_ROLLED_I_FILLET_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IW_I_FLANGES_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "SHS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_HOLLOW_EN_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_HOLLOW_EN_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "RHS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_HOLLOW_EN_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_HOLLOW_EN_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "CHS"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_CHS_EXACT_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_CHS_EXACT_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "U"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_ROLLED_U_FILLET_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "U_TAPERED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "I_TAPERED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "L_EQ"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_ROLLED_L_FILLET_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "L"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "IT_ROLLED_L_FILLET_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "const": "FLAT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "It": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Wt": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Iw": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Secrets / environment files (never commit)
+.env
+**/.env
+*.env
+.env.*
+
+# Python
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Optional FEM cross-check reports (informative, not committed)
+crosscheck/reports/

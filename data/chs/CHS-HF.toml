@@ -1,0 +1,18 @@
+schema_version = 1
+id = "CHS-HF"
+title = "CHS – circular hollow sections, hot finished"
+shape = "CHS"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10210-2:2006: edition of the It/Wt definition of CHS (A.2) and of the diameter list (Table B.1); only the 31 standard
+# outside diameters are included (docs/DATA_MODEL.md). Not a claim that every size is in the standard's tables.
+standard = "EN 10210-2:2006"
+process = "hot_finished"
+
+[designation]
+pattern = "CHS {D}x{t}"
+aliases = ["CHS{D}x{t}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md).
+[conventions]
+It = { method = "IT_CHS_EXACT_V1" }
+Wt = { method = "IT_CHS_EXACT_V1" }

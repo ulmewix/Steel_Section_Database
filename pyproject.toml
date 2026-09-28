@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "steel-section-database"
+version = "0.1.0"
+description = "Auditable primary geometry of steel profiles and an exact section-property engine."
+requires-python = ">=3.11"
+# The section-property engine has NO runtime dependencies (standard library only).
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "jsonschema>=4.20"]
+# Optional, non-blocking FEM cross-check (crosscheck/; never used for published values).
+fem = ["sectionproperties==3.10.2"]
+
+[tool.setuptools]
+packages = ["section_properties", "section_properties.shapes"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["fem: optional FEM cross-check with sectionproperties (informative, non-blocking)"]
+addopts = "-m 'not fem'"
+
+# Canonical generation environment: the committed generated/ outputs are authoritative only when
+# produced here (see README "Determinism and canonical environment").
+# The library itself supports every Python >= 3.11.
+[tool.steel_section_database]
+canonical_python = "3.12.10"
+canonical_platform = "ubuntu-24.04"

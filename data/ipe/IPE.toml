@@ -1,0 +1,17 @@
+schema_version = 1
+id = "IPE"
+title = "IPE – European I-sections with parallel flanges"
+shape = "I"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10365:2017 has been superseded by EN 10365:2026; the dimensions have not been checked against it (docs/DATA_MODEL.md).
+standard = "EN 10365:2017"
+process = "hot_rolled"
+
+[designation]
+pattern = "IPE {h}"
+aliases = ["IPE{h}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md).
+[conventions]
+It = { method = "IT_ROLLED_I_FILLET_V1" }
+Iw = { method = "IW_I_FLANGES_V1" }

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "rows.schema.json",
+  "title": "Rows of a profile series table (<SERIES>.csv), one definition per shape",
+  "description": "The order of `properties` in each shape definition is the canonical CSV column order.",
+  "$defs": {
+    "length": {"type": "number", "exclusiveMinimum": 0},
+    "length0": {"type": "number", "minimum": 0},
+    "designation": {"type": "string", "pattern": "^[A-Z]+ [0-9][0-9.x/]*$"},
+    "I": {
+      "title": "Shape I: doubly symmetric I/H section, parallel flanges, four root fillets [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "tw", "tf", "r"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "overall depth"},
+        "b": {"$ref": "#/$defs/length", "description": "flange width"},
+        "tw": {"$ref": "#/$defs/length", "description": "web thickness"},
+        "tf": {"$ref": "#/$defs/length", "description": "flange thickness"},
+        "r": {"$ref": "#/$defs/length0", "description": "root radius"}
+      }
+    },
+    "SHS": {
+      "title": "Shape SHS: square hollow section, rounded corners [mm]; empty ro/ri = corner radius rule of the series",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "b", "t"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "b": {"$ref": "#/$defs/length", "description": "outer side"},
+        "t": {"$ref": "#/$defs/length", "description": "wall thickness"},
+        "ro": {"$ref": "#/$defs/length0", "description": "outer corner radius (explicit override of the series rule, needs a reason in [corner_radii_overrides])"},
+        "ri": {"$ref": "#/$defs/length0", "description": "inner corner radius (explicit override of the series rule, needs a reason in [corner_radii_overrides])"}
+      },
+      "dependentRequired": {"ro": ["ri"], "ri": ["ro"]}
+    },
+    "RHS": {
+      "title": "Shape RHS: rectangular hollow section, rounded corners [mm]; empty ro/ri = corner radius rule of the series",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "t"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "overall depth"},
+        "b": {"$ref": "#/$defs/length", "description": "overall width"},
+        "t": {"$ref": "#/$defs/length", "description": "wall thickness"},
+        "ro": {"$ref": "#/$defs/length0", "description": "outer corner radius (explicit override of the series rule, needs a reason in [corner_radii_overrides])"},
+        "ri": {"$ref": "#/$defs/length0", "description": "inner corner radius (explicit override of the series rule, needs a reason in [corner_radii_overrides])"}
+      },
+      "dependentRequired": {"ro": ["ri"], "ri": ["ro"]}
+    },
+    "U": {
+      "title": "Shape U: channel with parallel flanges, root fillets, square flange tips [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "tw", "tf", "r"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "overall depth"},
+        "b": {"$ref": "#/$defs/length", "description": "flange width (back of the web to the flange tip)"},
+        "tw": {"$ref": "#/$defs/length", "description": "web thickness"},
+        "tf": {"$ref": "#/$defs/length", "description": "flange thickness"},
+        "r": {"$ref": "#/$defs/length0", "description": "root radius"}
+      }
+    },
+    "U_TAPERED": {
+      "title": "Shape U_TAPERED: channel with sloped inner flange faces, root fillets and toe radii [mm, %]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "tw", "tf", "r1", "r2", "slope_pct", "x_tf"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "overall depth"},
+        "b": {"$ref": "#/$defs/length", "description": "flange width (back of the web to the flange tip)"},
+        "tw": {"$ref": "#/$defs/length", "description": "web thickness"},
+        "tf": {"$ref": "#/$defs/length", "description": "flange thickness at the distance x_tf from the flange tip"},
+        "r1": {"$ref": "#/$defs/length0", "description": "root radius"},
+        "r2": {"$ref": "#/$defs/length0", "description": "toe radius"},
+        "slope_pct": {"$ref": "#/$defs/length0", "description": "slope of the inner flange faces [%] = 100 tan(alpha)"},
+        "x_tf": {"$ref": "#/$defs/length", "description": "distance of the point where tf is measured from the flange tip"}
+      }
+    },
+    "I_TAPERED": {
+      "title": "Shape I_TAPERED: doubly symmetric I section with sloped inner flange faces, root fillets and toe radii [mm, %]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "tw", "tf", "r1", "r2", "slope_pct", "x_tf"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "overall depth"},
+        "b": {"$ref": "#/$defs/length", "description": "flange width"},
+        "tw": {"$ref": "#/$defs/length", "description": "web thickness"},
+        "tf": {"$ref": "#/$defs/length", "description": "flange thickness at the distance x_tf from the flange tip"},
+        "r1": {"$ref": "#/$defs/length0", "description": "root radius"},
+        "r2": {"$ref": "#/$defs/length0", "description": "toe radius"},
+        "slope_pct": {"$ref": "#/$defs/length0", "description": "slope of the inner flange faces [%] = 100 tan(alpha)"},
+        "x_tf": {"$ref": "#/$defs/length", "description": "distance of the point where tf is measured from the flange tip"}
+      }
+    },
+    "CHS": {
+      "title": "Shape CHS: circular hollow section [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "D", "t"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "D": {"$ref": "#/$defs/length", "description": "outside diameter"},
+        "t": {"$ref": "#/$defs/length", "description": "wall thickness"}
+      }
+    },
+    "L_EQ": {
+      "title": "Shape L_EQ: hot-rolled equal-leg angle, root radius, toe radii at the inner edge of the leg ends, sharp heel [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "b", "t", "r1", "r2"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "b": {"$ref": "#/$defs/length", "description": "leg length (both legs)"},
+        "t": {"$ref": "#/$defs/length", "description": "thickness of both legs"},
+        "r1": {"$ref": "#/$defs/length0", "description": "root radius"},
+        "r2": {"$ref": "#/$defs/length0", "description": "toe radius at the inner edge of each leg end"}
+      }
+    },
+    "L": {
+      "title": "Shape L: hot-rolled unequal-leg angle, root radius, toe radii at the inner edge of the leg ends, sharp heel [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "h", "b", "t", "r1", "r2"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "h": {"$ref": "#/$defs/length", "description": "longer leg (along z)"},
+        "b": {"$ref": "#/$defs/length", "description": "shorter leg (along y), b <= h"},
+        "t": {"$ref": "#/$defs/length", "description": "thickness of both legs"},
+        "r1": {"$ref": "#/$defs/length0", "description": "root radius"},
+        "r2": {"$ref": "#/$defs/length0", "description": "toe radius at the inner edge of each leg end"}
+      }
+    },
+    "FLAT": {
+      "title": "Shape FLAT: flat bar, solid rectangle with sharp corners [mm]",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["designation", "b", "t"],
+      "properties": {
+        "designation": {"$ref": "#/$defs/designation"},
+        "b": {"$ref": "#/$defs/length", "description": "width (along y)"},
+        "t": {"$ref": "#/$defs/length", "description": "thickness (along z)"}
+      }
+    }
+  }
+}

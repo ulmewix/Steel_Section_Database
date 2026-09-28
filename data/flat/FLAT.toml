@@ -1,0 +1,14 @@
+schema_version = 1
+id = "FLAT"
+title = "FLAT – flat bars, solid rectangle"
+shape = "FLAT"
+# The defining standard of these sizes is not known: they are assumed to be hot-rolled flats of EN 10058, whose size
+# ranges were not checked. `process` is part of that assumption; no property depends on it.
+standard = "Assumed: hot-rolled flats of EN 10058 (sizes not checked)"
+process = "hot_rolled"
+
+[designation]
+pattern = "FLAT {b}x{t}"
+aliases = ["FLAT{b}x{t}", "FL {b}x{t}", "STRIP{b}x{t}"]
+
+# No [conventions]: It, Wt, Iw and ym of flat bars are unsupported (docs/CONVENTIONS.md).

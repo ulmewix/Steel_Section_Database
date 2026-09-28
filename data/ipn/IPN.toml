@@ -1,0 +1,16 @@
+schema_version = 1
+id = "IPN"
+title = "IPN – I-sections with sloped inner flange faces"
+shape = "I_TAPERED"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10365:2017 has been superseded by EN 10365:2026; the dimensions have not been checked against it (docs/DATA_MODEL.md).
+# Radii of DIN 1025-1:2009 (IPN 80 ... 550); r1 = tw, r2 as printed (IPN 550: 11.9). x_tf = b/4 from the flange tip,
+# slope 14 % (EN 10024:1995 clause 4.4); the exact value of the rule is stored (docs/DATA_MODEL.md).
+standard = "EN 10365:2017"
+process = "hot_rolled"
+
+[designation]
+pattern = "IPN {h}"
+aliases = ["IPN{h}", "I {h}", "INP {h}"]
+
+# No convention-dependent property (It, Wt, Iw, ym) is published: no documented convention (docs/CONVENTIONS.md).

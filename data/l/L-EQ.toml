@@ -1,0 +1,18 @@
+schema_version = 1
+id = "L-EQ"
+title = "L-EQ – hot-rolled equal-leg angles"
+shape = "L_EQ"
+# A mixed catalogue range, not one standard's range: EN 10056-1:1998 gives the calculation convention (sharp heel,
+# r2 = r1/2) and 24 of the 42 sizes; the others are DIN 1028, EN 10056-1:2017 and manufacturer sizes. L 110x110x10 carries
+# the radii of EN 10056-1:2017 Table 1 (r1 = 13, r2 = 6.5) (docs/DATA_MODEL.md). Not a claim of verification.
+standard = "Mixed range: EN 10056-1:1998 (calculation convention, 24 of 42 sizes); other sizes DIN 1028, EN 10056-1:2017, manufacturers"
+process = "hot_rolled"
+
+[designation]
+pattern = "L {b}x{b}x{t}"
+aliases = ["L{b}x{b}x{t}", "LNP {b}x{b}x{t}", "LNP{b}x{b}x{t}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md); Wt, Iw and the shear centre:
+# no documented convention.
+[conventions]
+It = { method = "IT_ROLLED_L_FILLET_V1" }

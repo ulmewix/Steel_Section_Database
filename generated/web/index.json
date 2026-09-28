@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "generator": {"package": "section_properties", "version": "0.1.0"},
+  "series": [
+    {"id": "CHS-CF", "file": "CHS-CF.json", "shape": "CHS", "profiles": 230},
+    {"id": "CHS-HF", "file": "CHS-HF.json", "shape": "CHS", "profiles": 114},
+    {"id": "FLAT", "file": "FLAT.json", "shape": "FLAT", "profiles": 62},
+    {"id": "HEA", "file": "HEA.json", "shape": "I", "profiles": 24},
+    {"id": "HEB", "file": "HEB.json", "shape": "I", "profiles": 24},
+    {"id": "HEM", "file": "HEM.json", "shape": "I", "profiles": 24},
+    {"id": "IPE", "file": "IPE.json", "shape": "I", "profiles": 18},
+    {"id": "IPN", "file": "IPN.json", "shape": "I_TAPERED", "profiles": 21},
+    {"id": "L", "file": "L.json", "shape": "L", "profiles": 39},
+    {"id": "L-EQ", "file": "L-EQ.json", "shape": "L_EQ", "profiles": 42},
+    {"id": "RHS-CF", "file": "RHS-CF.json", "shape": "RHS", "profiles": 260},
+    {"id": "RHS-HF", "file": "RHS-HF.json", "shape": "RHS", "profiles": 496},
+    {"id": "SHS-CF", "file": "SHS-CF.json", "shape": "SHS", "profiles": 163},
+    {"id": "SHS-HF", "file": "SHS-HF.json", "shape": "SHS", "profiles": 243},
+    {"id": "UPE", "file": "UPE.json", "shape": "U", "profiles": 14},
+    {"id": "UPN", "file": "UPN.json", "shape": "U_TAPERED", "profiles": 18}
+  ]
+}

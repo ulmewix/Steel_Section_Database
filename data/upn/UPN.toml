@@ -1,0 +1,16 @@
+schema_version = 1
+id = "UPN"
+title = "UPN – channels with sloped inner flange faces"
+shape = "U_TAPERED"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10365:2017 has been superseded by EN 10365:2026; the dimensions have not been checked against it (docs/DATA_MODEL.md).
+# Radii of DIN 1026-1:2009 (UPN 320: r2 = 8.8). x_tf is measured from the flange tip: b/2 with slope 8 % for h <= 300,
+# (b - tw)/2 with slope 5 % for h > 300; the exact value of the rule is stored (docs/DATA_MODEL.md).
+standard = "EN 10365:2017"
+process = "hot_rolled"
+
+[designation]
+pattern = "UPN {h}"
+aliases = ["UPN{h}", "UNP {h}", "UNP{h}", "U {h}"]
+
+# No convention-dependent property (It, Wt, Iw, ym) is published: no documented convention (docs/CONVENTIONS.md).

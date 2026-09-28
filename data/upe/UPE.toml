@@ -1,0 +1,18 @@
+schema_version = 1
+id = "UPE"
+title = "UPE – channels with parallel flanges"
+shape = "U"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10365:2017 has been superseded by EN 10365:2026; the dimensions have not been checked against it (docs/DATA_MODEL.md).
+# Radii of DIN 1026-2:2002 (docs/DATA_MODEL.md).
+standard = "EN 10365:2017"
+process = "hot_rolled"
+
+[designation]
+pattern = "UPE {h}"
+aliases = ["UPE{h}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md); Wt, Iw and ym: no
+# documented convention.
+[conventions]
+It = { method = "IT_ROLLED_U_FILLET_V1" }

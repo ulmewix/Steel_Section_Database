@@ -1,0 +1,26 @@
+# Tolerances of the test suite. Every comparison uses math.isclose semantics with explicit tolerances:
+#     |x - ref| <= max(rel_tol * max(|x|, |ref|), abs_tol)
+# abs_tol is always expressed in the unit of the compared quantity. Tolerances are never widened to make a test pass.
+
+[identity]
+# Analytical identity tests of the engine. abs_tol = abs_tol_eps * L^k, where L = max(h, b) of the tested section in mm
+# (or its characteristic size: the longer leg of an angle, the thickness t of a flat bar) and k the dimension exponent of
+# the quantity. This defines tolerances also for quantities whose exact value is zero (Iyz, centroid of symmetric shapes).
+primitives = { rel_tol = 1e-12, abs_tol_eps = 1e-12 }
+closed_form = { rel_tol = 1e-9, abs_tol_eps = 1e-9 }
+
+[identity.dimension_exponent]
+length = 1   # centroid coordinates, i, perimeter [mm]
+A = 2        # [mm2]
+Q = 3        # first moments, W, Wpl [mm3]
+I = 4        # Iy, Iz, Iyz [mm4]
+Iw = 6       # [mm6]
+
+# Control values of IPE 200 (exact geometry); abs_tol = one unit of the last digit shown.
+[control_values."IPE 200"]
+A = { value = 2848.41, unit = "mm2", rel_tol = 0.0, abs_tol = 0.01 }
+Iy = { value = 19431683, unit = "mm4", rel_tol = 0.0, abs_tol = 1 }
+Iz = { value = 1423683, unit = "mm4", rel_tol = 0.0, abs_tol = 1 }
+Wpl_y = { value = 220639, unit = "mm3", rel_tol = 0.0, abs_tol = 1 }
+Wpl_z = { value = 44612, unit = "mm3", rel_tol = 0.0, abs_tol = 1 }
+mass_per_length = { value = 22.36, unit = "kg/m", rel_tol = 0.0, abs_tol = 0.01 }

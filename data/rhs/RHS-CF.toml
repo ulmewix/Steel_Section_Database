@@ -1,0 +1,20 @@
+schema_version = 1
+id = "RHS-CF"
+title = "RHS – rectangular hollow sections, cold formed"
+shape = "RHS"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10219-2:2006: edition of the corner-radius rule and of the It/Wt formulas used (clause A.3 of the 2019 edition keeps
+# them); not a claim that every size is in the standard's tables.
+standard = "EN 10219-2:2006"
+process = "cold_formed"
+# Corner radii of every row with empty ro/ri cells: EN10219-2 (ro/ri = 2t/t for t <= 6, 2.5t/1.5t for 6 < t <= 10, 3t/2t for t > 10 mm), exact decimals.
+corner_radii = "EN10219-2"
+
+[designation]
+pattern = "RHS {h}x{b}x{t}"
+aliases = ["RHS{h}x{b}x{t}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md).
+[conventions]
+It = { method = "IT_HOLLOW_EN_V1" }
+Wt = { method = "IT_HOLLOW_EN_V1" }

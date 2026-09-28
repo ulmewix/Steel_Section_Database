@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "series.schema.json",
+  "title": "Profile series metadata (<SERIES>.toml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "shape",
+    "standard",
+    "process",
+    "designation"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z]+(-[A-Z]+)?$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "shape": {
+      "enum": [
+        "I",
+        "SHS",
+        "RHS",
+        "CHS",
+        "U",
+        "U_TAPERED",
+        "I_TAPERED",
+        "L_EQ",
+        "L",
+        "FLAT"
+      ]
+    },
+    "standard": {
+      "description": "Specification that defines the series (designations, nominal dimensions, calculation rules). Not a claim that the values were checked against it (docs/DATA_MODEL.md).",
+      "type": "string",
+      "minLength": 3
+    },
+    "process": {
+      "enum": [
+        "hot_rolled",
+        "hot_finished",
+        "cold_formed"
+      ]
+    },
+    "corner_radii": {
+      "description": "Shapes SHS/RHS only: rule of the corner radii used for empty ro/ri cells (docs/DATA_MODEL.md). EN10210-2: ro = 1.5t, ri = t; EN10219-2: 2t/t (t <= 6), 2.5t/1.5t (6 < t <= 10), 3t/2t (t > 10).",
+      "enum": [
+        "EN10210-2",
+        "EN10219-2"
+      ]
+    },
+    "corner_radii_overrides": {
+      "description": "Shapes SHS/RHS only: rows whose explicit ro/ri override the series rule, each with a short reason (plain text without commas, quotes or line breaks).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "designation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pattern"
+      ],
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "conventions": {
+      "description": "Convention-dependent properties published by this series. Absent = unsupported. Each entry names a method implemented for the shape (docs/CONVENTIONS.md).",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "It": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
+        },
+        "Wt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
+        },
+        "Iw": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
+        },
+        "ym": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "shape": {
+            "enum": [
+              "SHS",
+              "RHS"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "corner_radii"
+        ]
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "corner_radii"
+              ]
+            },
+            {
+              "required": [
+                "corner_radii_overrides"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+schema_version = 1
+id = "RHS-HF"
+title = "RHS – rectangular hollow sections, hot finished"
+shape = "RHS"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10210-2:2006: edition of the corner-radius rule and of the It/Wt formulas used (clause A.3 of the 2019 edition keeps
+# them); not a claim that every size is in the standard's tables.
+# RHS 80x40x11 and RHS 80x40x12.5 are not included: with the rule radii their inner flat is negative (docs/DATA_MODEL.md).
+standard = "EN 10210-2:2006"
+process = "hot_finished"
+# Corner radii of every row with empty ro/ri cells: EN10210-2 (ro = 1.5 t, ri = 1.0 t), exact decimals.
+corner_radii = "EN10210-2"
+
+[designation]
+pattern = "RHS {h}x{b}x{t}"
+aliases = ["RHS{h}x{b}x{t}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md).
+[conventions]
+It = { method = "IT_HOLLOW_EN_V1" }
+Wt = { method = "IT_HOLLOW_EN_V1" }

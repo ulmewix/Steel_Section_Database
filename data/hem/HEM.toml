@@ -1,0 +1,18 @@
+schema_version = 1
+id = "HEM"
+title = "HE M – European wide-flange H-sections, heavy series"
+shape = "I"
+# Specification that defines this series (designations, nominal dimensions); not a claim of verification.
+# EN 10365:2017 has been superseded by EN 10365:2026; the dimensions have not been checked against it (docs/DATA_MODEL.md).
+# HE M range of EN 10365; the section 320 x 305 ("HEM 320/305") belongs to the HE C series (HE 300 C) and is not part of it.
+standard = "EN 10365:2017"
+process = "hot_rolled"
+
+[designation]
+pattern = "HEM {n}"
+aliases = ["HE {n} M", "HEM{n}"]
+
+# Convention-dependent properties published by this series (see docs/CONVENTIONS.md).
+[conventions]
+It = { method = "IT_ROLLED_I_FILLET_V1" }
+Iw = { method = "IW_I_FLANGES_V1" }

@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    name: tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python: ["3.11", "3.12.10"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e .[dev]
+      - run: python -m tools.cli fmt --check
+      - run: python -m tools.cli check
+      - run: pytest
+
+  canonical:
+    # Canonical generation environment: committed generated/ must be fresh.
+    name: canonical build (CPython 3.12.10, ubuntu-24.04)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+      - run: pip install -e .[dev]
+      - run: python -m tools.cli build
+      - run: git diff --exit-code -- generated
+
+  fem:
+    # Optional FEM cross-check: informative only, never blocks.
+    name: FEM cross-check (informative)
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.10"
+      - run: pip install -e .[dev,fem]
+      - run: pytest -m fem

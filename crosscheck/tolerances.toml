@@ -1,0 +1,23 @@
+# Settings and tolerances of the optional FEM cross-check (crosscheck/fem_check.py, sectionproperties): informative, never
+# blocks the build and never produces published values. Every comparison uses math.isclose semantics.
+
+[fem]
+rel_tol_warn = 1e-4
+max_sagitta_mm = 1e-4
+blocking = false
+
+# Hollow sections: every arc is replaced by a fixed number of chords and the FEM is compared with the engine on the SAME
+# polygon (the FEM error proper); the chord error of the polygon itself is reported separately.
+[fem.hollow]
+chords_per_90 = 32
+mesh_thickness_divisor = 3   # element area <= (t / divisor)^2 [mm2]
+j_solver = "cgs"             # iterative solver of the torsion problem (the direct Lagrange solve fills in)
+rel_tol_warn = 1e-9
+sample_per_series = 10
+
+# Angles: the settings of the channels (fine chords, mesh A/15000); compared with the engine on the SAME polygon (the FEM
+# error proper); the principal angle alpha as an absolute difference in degrees.
+[fem.angle]
+rel_tol_warn = 1e-9
+alpha_abs_warn_deg = 1e-6
+sample_per_series = 5
