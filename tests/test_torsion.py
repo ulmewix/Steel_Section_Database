@@ -69,10 +69,10 @@ def test_ipe200_catalogue_values():
 
 
 def test_conventions_are_registered_but_not_published_by_default():
-    assert set(CONVENTION_METHODS["I"]) == {"It", "Iw"}
-    assert set(CONVENTION_METHODS["SHS"]) == set(CONVENTION_METHODS["RHS"]) == set(CONVENTION_METHODS["CHS"]) == {"It", "Wt"}
-    # channels with parallel flanges: It only; sloped flanges: no documented convention
-    assert set(CONVENTION_METHODS["U"]) == {"It"}
+    assert set(CONVENTION_METHODS["I"]) == {"It", "Iw", "Avz"}
+    assert set(CONVENTION_METHODS["SHS"]) == set(CONVENTION_METHODS["RHS"]) == set(CONVENTION_METHODS["CHS"]) == {"It", "Wt", "Avy", "Avz"}
+    # channels with parallel flanges: It and Avz; sloped flanges: no documented convention
+    assert set(CONVENTION_METHODS["U"]) == {"It", "Avz"}
     assert CONVENTION_METHODS["U_TAPERED"] == CONVENTION_METHODS["I_TAPERED"] == {}
     # angles: It only; Wt, Iw and the shear centre: no documented convention
     assert set(CONVENTION_METHODS["L_EQ"]) == set(CONVENTION_METHODS["L"]) == {"It"}

@@ -141,6 +141,32 @@
               "pattern": "^[A-Z0-9_]+_V[0-9]+$"
             }
           }
+        },
+        "Avy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
+        },
+        "Avz": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "pattern": "^[A-Z0-9_]+_V[0-9]+$"
+            }
+          }
         }
       }
     }

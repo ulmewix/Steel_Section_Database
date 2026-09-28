@@ -16,3 +16,4 @@ aliases = ["UPE{h}"]
 # documented convention.
 [conventions]
 It = { method = "IT_ROLLED_U_FILLET_V1" }
+Avz = { method = "AV_ROLLED_U_EN1993_V1" }

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from types import ModuleType
 
 from section_properties.contour import GeometryError, Section
-from section_properties.conventions import CONVENTION_METHODS, METHODS, PROPERTY_UNITS
+from section_properties.conventions import AREA_BASED_PROPERTIES, CONVENTION_METHODS, METHODS, PROPERTY_UNITS
 from section_properties.derived import mass_per_length
 from section_properties.elastic import ElasticProperties, elastic_properties
 from section_properties.plastic import plastic_modulus
@@ -26,10 +26,16 @@ def compute_section(section: Section) -> tuple[ElasticProperties, float, float]:
     return el, plastic_modulus(section, 0.0).Wpl, plastic_modulus(section, 90.0).Wpl
 
 
-def convention_value(shape: ModuleType, row: dict, prop: str, method: str) -> float:
+def convention_value(shape: ModuleType, row: dict, prop: str, method: str, *, area: float | None = None) -> float:
     """Value of a convention-dependent property with a registered method (also used by the FEM cross-check).
-    `row` is a resolved row (Series.resolve)."""
-    return CONVENTION_METHODS[shape.SHAPE][prop][method](**shape.as_floats(row))
+    `row` is a resolved row (Series.resolve). The shear areas (AREA_BASED_PROPERTIES) also need `area`, the exact
+    area A of the profile (the published A)."""
+    function = CONVENTION_METHODS[shape.SHAPE][prop][method]
+    if prop in AREA_BASED_PROPERTIES:
+        if area is None:
+            raise ValueError(f"{prop} ({method}) needs the exact area A of the profile")
+        return function(area, **shape.as_floats(row))
+    return function(**shape.as_floats(row))
 
 
 def check_symmetric_about_y(el: ElasticProperties) -> None:
@@ -84,7 +90,7 @@ def compute_profile(shape: ModuleType, row: dict, conventions: dict[str, dict[st
         if methods[name]:
             values[name] = exact[name]
         elif name in conventions:
-            values[name] = convention_value(shape, row, name, conventions[name]["method"])
+            values[name] = convention_value(shape, row, name, conventions[name]["method"], area=exact["A"])
         else:
             values[name] = None
     return ProfileResult(section=section, elastic=el, values=values)

@@ -19,7 +19,7 @@
   "properties": {
     "schema_version": {
       "description": "Version of this web JSON contract. Incremented with every change of this schema other than its descriptions and with every change of the index.json layout (docs/CONVENTIONS.md).",
-      "const": 1
+      "const": 2
     },
     "series": {
       "type": "string"
@@ -90,7 +90,9 @@
         "It",
         "Wt",
         "Iw",
-        "ym"
+        "ym",
+        "Avy",
+        "Avz"
       ],
       "properties": {
         "length": {
@@ -179,6 +181,12 @@
         },
         "ym": {
           "const": "mm"
+        },
+        "Avy": {
+          "const": "mm2"
+        },
+        "Avz": {
+          "const": "mm2"
         }
       },
       "description": "Units of the values: every geometry key is a length in mm except slope_pct (the slope of sloped flanges, 100·tan α, in %); properties as listed (alpha: the angle of the principal axis u in degrees)."
@@ -213,10 +221,12 @@
         "It",
         "Wt",
         "Iw",
-        "ym"
+        "ym",
+        "Avy",
+        "Avz"
       ],
       "patternProperties": {
-        "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym)$": {
+        "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym|Avy|Avz)$": {
           "$ref": "#/$defs/meta"
         }
       },
@@ -329,9 +339,73 @@
             }
           },
           "then": false
+        },
+        {
+          "if": {
+            "properties": {
+              "Avy": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "Avy": {
+                "required": [
+                  "status",
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_CHS_EN1993_V1",
+                      "AV_RHS_EN1993_V1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "Avz": {
+                "properties": {
+                  "status": {
+                    "const": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "Avz": {
+                "required": [
+                  "status",
+                  "method"
+                ],
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_CHS_EN1993_V1",
+                      "AV_RHS_EN1993_V1",
+                      "AV_ROLLED_I_EN1993_V1",
+                      "AV_ROLLED_U_EN1993_V1"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       ],
-      "description": "Status per property. A supported convention-dependent property (It, Wt, Iw, ym) must name a method registered for the shape."
+      "description": "Status per property. A supported convention-dependent property (It, Wt, Iw, ym, Avy, Avz) must name a method registered for the shape."
     },
     "profiles": {
       "type": "array",
@@ -390,10 +464,12 @@
               "It",
               "Wt",
               "Iw",
-              "ym"
+              "ym",
+              "Avy",
+              "Avz"
             ],
             "patternProperties": {
-              "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym)$": {
+              "^(A|mass_per_length|perimeter|ys|zs|Iy|Wel_y|Wel_y_bottom|Wel_y_top|Wpl_y|i_y|Iz|Wel_z|Wel_z_left|Wel_z_right|Wpl_z|i_z|Iyz|Iu|Iv|alpha|i_u|i_v|It|Wt|Iw|ym|Avy|Avz)$": {
                 "type": [
                   "number",
                   "null"
@@ -1836,6 +1912,108 @@
     {
       "if": {
         "properties": {
+          "properties_meta": {
+            "properties": {
+              "Avy": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Avy": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Avy": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "properties_meta": {
+            "properties": {
+              "Avz": {
+                "properties": {
+                  "status": {
+                    "const": "unsupported"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Avz": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "profiles": {
+            "items": {
+              "properties": {
+                "properties": {
+                  "properties": {
+                    "Avz": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
           "shape": {
             "enum": [
               "SHS",
@@ -1906,6 +2084,25 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_ROLLED_I_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -1957,6 +2154,26 @@
                 "properties": {
                   "method": {
                     "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_RHS_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_RHS_EN1993_V1",
                       null
                     ]
                   }
@@ -2016,6 +2233,26 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_RHS_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_RHS_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2067,6 +2304,26 @@
                 "properties": {
                   "method": {
                     "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_CHS_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_CHS_EN1993_V1",
                       null
                     ]
                   }
@@ -2125,6 +2382,25 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      "AV_ROLLED_U_EN1993_V1",
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2178,6 +2454,24 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2224,6 +2518,24 @@
                 }
               },
               "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
                 "properties": {
                   "method": {
                     "enum": [
@@ -2285,6 +2597,24 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2339,6 +2669,24 @@
                     ]
                   }
                 }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
               }
             }
           }
@@ -2385,6 +2733,24 @@
                 }
               },
               "ym": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avy": {
+                "properties": {
+                  "method": {
+                    "enum": [
+                      null
+                    ]
+                  }
+                }
+              },
+              "Avz": {
                 "properties": {
                   "method": {
                     "enum": [

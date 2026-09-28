@@ -22,7 +22,7 @@ SIGNIFICANT_DIGITS = 6
 # Version of the public web JSON contract (schema/web.schema.json), written to generated/web/*.json and
 # index.json. Incremented with every change of that schema or of the index.json layout (docs/CONVENTIONS.md);
 # independent of the schema_version of the series TOML files (internal input format).
-WEB_SCHEMA_VERSION = 1
+WEB_SCHEMA_VERSION = 2
 
 
 def round_sig(value: float, digits: int = SIGNIFICANT_DIGITS) -> Decimal:
@@ -137,6 +137,8 @@ AUDIT_COLUMNS = (
     ("Iw_cm6", "Iw", -6),
     ("ym_cm", "ym", -1),
     ("surface_m2_m", "perimeter", -3),
+    ("Avy_cm2", "Avy", -2),
+    ("Avz_cm2", "Avz", -2),
 )
 
 

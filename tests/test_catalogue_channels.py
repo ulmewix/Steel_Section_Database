@@ -24,8 +24,10 @@ def test_series_shape_count_and_conventions(all_series, series_id):
     series = _series(all_series, series_id)
     assert series.meta["shape"] == shape and len(series.rows) == count
     assert series.meta["process"] == "hot_rolled" and series.meta["standard"] == "EN 10365:2017"
-    # It of UPE: IT_ROLLED_U_FILLET_V1; every other It, Wt, Iw, ym of the three series is unsupported
-    expected = {"It": {"method": "IT_ROLLED_U_FILLET_V1"}} if series_id == "UPE" else {}
+    # It and Avz of UPE: IT_ROLLED_U_FILLET_V1, AV_ROLLED_U_EN1993_V1; every other It, Wt, Iw, ym, Avy, Avz of the three
+    # series is unsupported
+    expected = ({"It": {"method": "IT_ROLLED_U_FILLET_V1"}, "Avz": {"method": "AV_ROLLED_U_EN1993_V1"}}
+                if series_id == "UPE" else {})
     assert series.conventions == expected
 
 

@@ -7,18 +7,23 @@ Every published property carries a status and a method id (`properties_meta` in 
   angles) the computed value has no safe meaning as a section property of the shape. There is no `approximate` status; it
   could only be introduced with a new contract version and a clear public flag.
 
-Exact properties use the shape's exact method. Convention-dependent properties (It, Wt, Iw, ym) are `unsupported` by default;
-a series publishes one only by declaring it in `[conventions]` of its TOML with a method implemented for its shape
-(`section_properties/conventions.py`). A method is registered only if it has a printed, publicly accessible source, a
-precisely defined formula, reproduces printed catalogue values, and its implementation is checked against an independently
-written form in the tests.
+Exact properties use the shape's exact method. Convention-dependent properties (It, Wt, Iw, ym and the shear areas Avy, Avz)
+are `unsupported` by default; a series publishes one only by declaring it in `[conventions]` of its TOML with a method
+implemented for its shape (`section_properties/conventions.py`). A method is registered only if it has a printed, publicly
+accessible source, a precisely defined formula, reproduces printed catalogue values, and its implementation is checked
+against an independently written form in the tests. The shear areas are the exception: their methods are the formulas of
+EN 1993-1-1 6.2.6(3) themselves, and no printed values are pinned in the tests (hollow sections: no catalogue prints them;
+I sections and UPE: the check against the ArcelorMittal Sales Programme V2026-1 is pending)
+([Shear areas](#shear-areas-avy-avz)).
 
 A method id never changes meaning; a different formula gets a new id (`…_V2`). FEM results (sectionproperties) are
 cross-check information only: they are never published and never used as a fallback for `unsupported`.
 
 Consumers (e.g. design calculators) may use only `supported` values and must fail explicitly on `null`, never substitute a
-value. Quantities of a design layer — shear area Av, c/t ratios, section class, buckling reduction χ, Mcr, corrosion — are
-outside this engine.
+value. Quantities of a design layer — shear resistance (Vpl,Rd with fy and γM0, the factor η of EN 1993-1-5 in general,
+shear buckling), c/t ratios, section class, buckling reduction χ, Mcr, corrosion — are outside this engine. The shear areas
+Avy, Avz are published as section properties; the only η they contain is the fixed η = 1.0 that is part of the definition of
+`AV_ROLLED_I_EN1993_V1` — η is not an input of the engine.
 
 ## Frame and sign conventions
 
@@ -43,6 +48,9 @@ outside this engine.
   smallest y and z (channels: the catalogue ys from the back of the web; angles: the catalogue ys, zs from the backs of leg h
   and leg b). `ym` = y_M − y_c, the shear centre measured from the centroid along y (channels: negative, behind the web) —
   unsupported for every series.
+- Shear areas: `Avz` is the shear area for a shear force along z, `Avy` for one along y (EN 1993-1-1: Av,z for Vz,Ed). Unlike
+  Iy, Wel_y or Wpl_y (bending about the axis), the index names the direction of the force: for I sections and channels
+  `Avz` belongs to a load parallel to the web, for rectangular hollow sections to a load parallel to the depth h (along z).
 
 ### Catalogue notation of angles
 
@@ -70,6 +78,10 @@ outside this engine.
 | `IT_ROLLED_L_FILLET_V1` | It (shapes `L_EQ`, `L`, rolled angles) | catalogue convention of angles (SCI P363 §3.2.6 / Blue Book / Orange Book) |
 | `IT_HOLLOW_EN_V1` | It, Wt (shapes `SHS`, `RHS`) | formula of EN 10210-2 / EN 10219-2 (Bredt + open strip, mean corner radius) |
 | `IT_CHS_EXACT_V1` | It, Wt (shape `CHS`) | exact: polar moment 2·I and 2·Wel of the annulus |
+| `AV_ROLLED_I_EN1993_V1` | Avz (shape `I`, rolled, parallel flanges) | EN 1993-1-1 6.2.6(3)a, load parallel to the web, fixed η = 1.0 |
+| `AV_ROLLED_U_EN1993_V1` | Avz (shape `U`, rolled channels with parallel flanges) | EN 1993-1-1 6.2.6(3)b, load parallel to the web |
+| `AV_RHS_EN1993_V1` | Avy, Avz (shapes `SHS`, `RHS`) | EN 1993-1-1 6.2.6(3)f, A·b/(b + h) and A·h/(b + h) |
+| `AV_CHS_EN1993_V1` | Avy, Avz (shape `CHS`) | EN 1993-1-1 6.2.6(3)g, 2·A/π |
 
 Wt is the torsional modulus [mm³] (the product standards' "Ct"; T/Wt is the nominal shear stress of the standards, not the peak
 stress at the re-entrant corners). It is a property of every series, `unsupported` where no method is registered.
@@ -241,6 +253,64 @@ Exact for an annulus (the St Venant warping function is zero, so the torsion con
 stress T·(D/2)/It occurs at the outer surface); also the definition of EN 10210-2:2006 A.2 and EN 10219-2:2006 B.2 (It = 2I,
 Ct = 2Wel).
 
+### Shear areas Avy, Avz
+
+The shear area Av of EN 1993-1-1:2005+AC:2009 clause 6.2.6(3) (ČSN EN 1993-1-1 ed.2), computed from the exact area A of the
+engine (the published A) and the nominal dimensions of the data (`section_properties/shear.py`). `Avz` is the area for a
+shear force along z, `Avy` for one along y ([Frame and sign conventions](#frame-and-sign-conventions)). Only the section
+property is published; the plastic shear resistance Vpl,Rd = Av·(fy/√3)/γM0, the steel grade and shear buckling
+(EN 1993-1-5) belong to the design layer of the consumer.
+
+#### `AV_ROLLED_I_EN1993_V1` — rolled I and H sections, load parallel to the web (Avz)
+
+```
+Avz = A − 2·b·tf + (tw + 2·r)·tf,   but not less than η·hw·tw,   η = 1.0,   hw = h − 2·tf      [mm²]
+```
+
+- Clause 6.2.6(3)a; hw = h − 2·tf is the depth of the web between the flanges.
+- η = 1.0 is part of the definition of this method id: the value the clause permits as conservative. Determining η from
+  EN 1993-1-5 (it depends on the steel grade and the National Annex), or any other value of η, is outside this engine. η is
+  neither a user nor a canonical input (no data column, no TOML key, no parameter); another definition of η would be a new
+  method id.
+- The lower bound never governs for the exact outline of shape I: A − 2·b·tf = hw·tw + (4 − π)·r², so the first term exceeds
+  hw·tw by (4 − π)·r² + (tw + 2·r)·tf (smallest Avz/(hw·tw) of the data: 1.205, HEB 1000).
+- Printed values: not pinned in the tests; the check against the ArcelorMittal Sales Programme V2026-1 is pending.
+- Scope: rolled I and H sections with parallel flanges (shape `I`), Avz only. 6.2.6(3) gives the area for load parallel to
+  the flanges (e) for welded sections only; it is not applied to rolled sections, so Avy is unsupported.
+
+#### `AV_ROLLED_U_EN1993_V1` — rolled channels, load parallel to the web (Avz)
+
+```
+Avz = A − 2·b·tf + (tw + r)·tf      [mm²]
+```
+
+- Clause 6.2.6(3)b; b is the flange width from the back of the web to the tip.
+- Printed values: not pinned in the tests; the check against the ArcelorMittal Sales Programme V2026-1 is pending.
+- Scope: channels with parallel flanges (shape `U`), Avz only (as for the I sections).
+
+#### `AV_RHS_EN1993_V1` — rectangular hollow sections (Avy, Avz)
+
+```
+Avz = A·h / (b + h)   (load parallel to the depth h, along z)
+Avy = A·b / (b + h)   (load parallel to the width b, along y)      [mm²]
+```
+
+- Clause 6.2.6(3)f, rolled rectangular hollow sections of uniform thickness; SHS: h = b, Avy = Avz = A/2.
+- Applied to hot-finished (EN 10210-2) and cold-formed (EN 10219-2) series alike: all four walls have the thickness t, and
+  "rolled" is read as the opposite of the welded box sections of 6.2.6(3)d, e (cold-formed tubes are roll-formed). The corner
+  radii of the series rule enter through A only.
+- No catalogue prints Av of hollow sections, so the criterion "reproduces printed catalogue values" cannot be applied: the
+  method rests on the formula of the standard, with the exact A (checked against closed forms) and the nominal b, h.
+
+#### `AV_CHS_EN1993_V1` — circular hollow sections (Avy, Avz)
+
+```
+Avy = Avz = 2·A / π      [mm²]
+```
+
+- Clause 6.2.6(3)g, circular hollow sections and tubes of uniform thickness (hot finished and cold formed); for the annulus
+  2·A/π = 2·t·(D − t). As for `AV_RHS_EN1993_V1`, no catalogue prints Av: the method rests on the formula of the standard.
+
 ## Unsupported properties
 
 A candidate below can be adopted later only as a new method id that meets the registration criteria above.
@@ -270,23 +340,30 @@ A candidate below can be adopted later only as a new method id that meets the re
   b/t → ∞ and overestimates it over the data by 1.6 % (b/t = 40) to 21.2 % (b/t = 3.6); it is not published. Wt is a series
   as well; Iw is zero for a single straight wall in thin-walled theory.
 - **Wpl_y, Wpl_z of angles**: see `EXACT_CONTOUR_V1` above.
+- **Avy of rolled I sections and channels** (shapes `I`, `U`): 6.2.6(3) gives the shear area for load parallel to the flanges
+  only for welded sections (e); it is not transferred to rolled sections.
+- **Avy, Avz of UPN and IPN** (sloped flanges): 6.2.6(3)a, b do not say which flange thickness applies to a sloped flange.
+  With the stored tf (the thickness at x_tf) and r = r1 the formulas deviate from the Avz printed in the ArcelorMittal Sales
+  Programme (FR-EN edition of 2021 or later) by −1.6 … −3.4 % (IPN) and −4.7 … +0.9 % (UPN); the mean thickness of the
+  sloped outstand does not reproduce them either.
+- **Avy, Avz of angles and flat bars**: 6.2.6(3) has no rule for them.
 
 ## Status per series
 
 All other properties (A, mass_per_length, perimeter, ys, zs, Iy, Iz, Iyz, Iu, Iv, alpha, the Wel moduli, the radii of
 gyration) are `supported` (`EXACT_CONTOUR_V1`, mass `MASS_RHO_V1`) for every series.
 
-| Series | Shape | It | Wt | Iw | ym | Wpl_y, Wpl_z |
-|---|---|---|---|---|---|---|
-| IPE, HEA, HEB, HEM | `I` | `IT_ROLLED_I_FILLET_V1` | unsupported | `IW_I_FLANGES_V1` | unsupported | supported |
-| SHS-HF, SHS-CF | `SHS` | `IT_HOLLOW_EN_V1` | `IT_HOLLOW_EN_V1` | unsupported | unsupported | supported |
-| RHS-HF, RHS-CF | `RHS` | `IT_HOLLOW_EN_V1` | `IT_HOLLOW_EN_V1` | unsupported | unsupported | supported |
-| CHS-HF, CHS-CF | `CHS` | `IT_CHS_EXACT_V1` | `IT_CHS_EXACT_V1` | unsupported | unsupported | supported |
-| UPE | `U` | `IT_ROLLED_U_FILLET_V1` | unsupported | unsupported | unsupported | supported |
-| UPN | `U_TAPERED` | unsupported | unsupported | unsupported | unsupported | supported |
-| IPN | `I_TAPERED` | unsupported | unsupported | unsupported | unsupported | supported |
-| L-EQ, L | `L_EQ`, `L` | `IT_ROLLED_L_FILLET_V1` | unsupported | unsupported | unsupported | unsupported |
-| FLAT | `FLAT` | unsupported | unsupported | unsupported | unsupported | supported |
+| Series | Shape | It | Wt | Iw | ym | Wpl_y, Wpl_z | Avy | Avz |
+|---|---|---|---|---|---|---|---|---|
+| IPE, HEA, HEB, HEM | `I` | `IT_ROLLED_I_FILLET_V1` | unsupported | `IW_I_FLANGES_V1` | unsupported | supported | unsupported | `AV_ROLLED_I_EN1993_V1` |
+| SHS-HF, SHS-CF | `SHS` | `IT_HOLLOW_EN_V1` | `IT_HOLLOW_EN_V1` | unsupported | unsupported | supported | `AV_RHS_EN1993_V1` | `AV_RHS_EN1993_V1` |
+| RHS-HF, RHS-CF | `RHS` | `IT_HOLLOW_EN_V1` | `IT_HOLLOW_EN_V1` | unsupported | unsupported | supported | `AV_RHS_EN1993_V1` | `AV_RHS_EN1993_V1` |
+| CHS-HF, CHS-CF | `CHS` | `IT_CHS_EXACT_V1` | `IT_CHS_EXACT_V1` | unsupported | unsupported | supported | `AV_CHS_EN1993_V1` | `AV_CHS_EN1993_V1` |
+| UPE | `U` | `IT_ROLLED_U_FILLET_V1` | unsupported | unsupported | unsupported | supported | unsupported | `AV_ROLLED_U_EN1993_V1` |
+| UPN | `U_TAPERED` | unsupported | unsupported | unsupported | unsupported | supported | unsupported | unsupported |
+| IPN | `I_TAPERED` | unsupported | unsupported | unsupported | unsupported | supported | unsupported | unsupported |
+| L-EQ, L | `L_EQ`, `L` | `IT_ROLLED_L_FILLET_V1` | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| FLAT | `FLAT` | unsupported | unsupported | unsupported | unsupported | supported | unsupported | unsupported |
 
 ## Output units and rounding
 
@@ -296,14 +373,17 @@ gyration) are `supported` (`EXACT_CONTOUR_V1`, mass `MASS_RHO_V1`) for every ser
 | `generated/properties/<ID>.csv` (audit) | catalogue units: cm², cm³, cm⁴, cm⁶, cm, kg/m, m²/m; `alpha_deg` and `tan_alpha` (`inf` where alpha = 90°; no current row) | 6 significant figures |
 
 Geometry is echoed exactly as written in the data file; corner radii of SHS/RHS are the exact decimal results of the series
-rule (1.5 × 6.3 = 9.45), marked in the audit column `corner_radii`. Wt is in mm³ (web) and cm³ (audit column `Wt_cm3`).
+rule (1.5 × 6.3 = 9.45), marked in the audit column `corner_radii`. Wt is in mm³ (web) and cm³ (audit column `Wt_cm3`); Avy,
+Avz in mm² (web) and cm² (audit columns `Avy_cm2`, `Avz_cm2`, the last two columns).
 Rounding uses ROUND_HALF_EVEN applied to the exact binary value of each float; numbers are written in plain decimal notation
 (no exponent). Unsupported properties are `null` in the web JSON and the word `unsupported` in the audit tables.
 
 ## Web JSON contract
 
 `schema_version` in `generated/web/<ID>.json` and `generated/web/index.json` is the version of the public web JSON contract,
-written from `WEB_SCHEMA_VERSION` in `section_properties/export.py`. The current version is **1**.
+written from `WEB_SCHEMA_VERSION` in `section_properties/export.py`. The current version is **2**. Version 2 added the shear
+areas Avy, Avz (their units, `properties_meta` entries, profile values and method rules); every key, key order, value, status
+and method of version 1 is unchanged.
 
 - Series files (`generated/web/<ID>.json`), fixed by [`schema/web.schema.json`](../schema/web.schema.json): `schema_version`,
   `series`, `title`, `shape`, `standard`, `process`, `corner_radii` (SHS/RHS only), `units`, `properties_meta` (per property:
@@ -329,7 +409,8 @@ TOML files versions an internal input format and is independent of it.
   pass.
 - **Independent references**: `tests/angle_reference.py` (angles) and `tests/flat_reference.py` (flat bars) import nothing
   from the engine; the channels and taper-flange I sections are checked against an independent slice integration in
-  `tests/test_shape_channel.py`; every convention method against an independently written form in `tests/test_torsion.py`.
+  `tests/test_shape_channel.py`; every convention method against an independently written form in `tests/test_torsion.py`,
+  the shear areas against closed forms of their shapes in `tests/test_shear_area.py`.
 - **Control values**: IPE 200 (A, Iy, Iz, Wpl_y, Wpl_z, mass; `tests/tolerances.toml`).
 - **Printed catalogue values**: a sample of values printed by EN 10056-1, SCI P363 / Blue Book, the ArcelorMittal Sales
   Programme, Orange Book and UPE brochure, DIN tables, Vallourec, Tata Steel and SSAB is reproduced at the printed precision

@@ -1,7 +1,7 @@
 # Steel Section Database
 
 A database of the **primary geometry** of steel sections and one shared, deterministic engine that computes their section
-properties (A, Iy, Iz, Wel, Wpl, i, principal axes, It, Iw, Wt, …). The computed values are published as audit tables and as a
+properties (A, Iy, Iz, Wel, Wpl, i, principal axes, It, Iw, Wt, shear areas Avy, Avz, …). The computed values are published as audit tables and as a
 versioned web JSON contract for consumer applications such as steel design calculators.
 
 ```
@@ -24,8 +24,9 @@ data/ (canonical geometry) → section_properties/ (engine) → tests/ → gener
 | Flat bars | FLAT (62) | `FLAT` |
 
 Every series publishes the exact properties of its geometry, its centroid, product moment and principal axes. It, Wt and Iw
-are published where a documented catalogue convention exists, otherwise they are `unsupported`; the shear centre ym is
-`unsupported` for every series ([docs/CONVENTIONS.md](docs/CONVENTIONS.md#status-per-series)).
+are published where a documented catalogue convention exists, the shear areas Avy, Avz where EN 1993-1-1 6.2.6(3) gives a
+rule for the shape (IPE, HEA, HEB, HEM, UPE: Avz; SHS, RHS, CHS: both), otherwise they are `unsupported`; the shear centre ym
+is `unsupported` for every series ([docs/CONVENTIONS.md](docs/CONVENTIONS.md#status-per-series)).
 
 ## Principles
 
@@ -37,8 +38,8 @@ are published where a documented catalogue convention exists, otherwise they are
   ([docs/DATA_MODEL.md](docs/DATA_MODEL.md)).
 - Exact geometry: straight lines and circular arcs are integrated in closed form — no chords, no FEM in production
   ([docs/CONVENTIONS.md](docs/CONVENTIONS.md)).
-- Every published property carries the method used to compute it. Properties that depend on a convention (It, Wt, Iw, ym)
-  are published only when a cited, reproducible convention exists; otherwise they are `unsupported` (value `null`).
+- Every published property carries the method used to compute it. Properties that depend on a convention (It, Wt, Iw, ym,
+  Avy, Avz) are published only when a cited, reproducible convention exists; otherwise they are `unsupported` (value `null`).
 - Deterministic and testable: the same sources always give byte-identical outputs.
 
 ## Layers and dependency rule
@@ -117,7 +118,7 @@ a readable diff. It is a derived, clearly marked output, never edited by hand.
 ## Web JSON contract
 
 `generated/web/` is the public output for consumer applications; its layout is fixed by
-[`schema/web.schema.json`](schema/web.schema.json) and versioned by `schema_version` (currently 1). Consumers should validate
+[`schema/web.schema.json`](schema/web.schema.json) and versioned by `schema_version` (currently 2). Consumers should validate
 against the schema, use only `supported` values and fail explicitly on `null` (unsupported) — never substitute a value.
 Details: [docs/CONVENTIONS.md](docs/CONVENTIONS.md#web-json-contract).
 

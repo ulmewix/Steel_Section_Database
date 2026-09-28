@@ -5,8 +5,8 @@ A property is published as `supported` only with a registered method:
 - exact properties (A, I, W, Wpl, i, …) use the shape's exact method from `METHODS`; a shape may leave an exact
   property unpublished (`unsupported`) when it has no agreed meaning for that shape (the plastic moduli Wpl_y, Wpl_z of
   angles);
-- convention-dependent properties (It, Wt, Iw, ym) are `unsupported` by default. A series publishes one
-  only if its TOML declares `[conventions] <property> = {method = …}` with a method registered in
+- convention-dependent properties (It, Wt, Iw, ym and the shear areas Avy, Avz) are `unsupported` by default. A
+  series publishes one only if its TOML declares `[conventions] <property> = {method = …}` with a method registered in
   `CONVENTION_METHODS` for its shape (a cited, reproducible convention; see docs/CONVENTIONS.md).
 
 There is no `approximate` status in the web JSON contract. FEM results are never used here.
@@ -17,6 +17,15 @@ from __future__ import annotations
 from collections.abc import Callable
 
 from section_properties.constants import RHO_STEEL_KG_M3
+from section_properties.shear import (
+    av_chs_en1993_v1,
+    avy_rhs_en1993_v1,
+    avy_shs_en1993_v1,
+    avz_rhs_en1993_v1,
+    avz_rolled_i_en1993_v1,
+    avz_rolled_u_en1993_v1,
+    avz_shs_en1993_v1,
+)
 from section_properties.torsion import (
     it_chs_exact_v1,
     it_rolled_i_fillet_v1,
@@ -39,6 +48,10 @@ IT_ROLLED_L_FILLET = "IT_ROLLED_L_FILLET_V1"
 IW_I_FLANGES = "IW_I_FLANGES_V1"
 IT_HOLLOW_EN = "IT_HOLLOW_EN_V1"
 IT_CHS_EXACT = "IT_CHS_EXACT_V1"
+AV_ROLLED_I = "AV_ROLLED_I_EN1993_V1"
+AV_ROLLED_U = "AV_ROLLED_U_EN1993_V1"
+AV_RHS = "AV_RHS_EN1993_V1"
+AV_CHS = "AV_CHS_EN1993_V1"
 
 SUPPORTED = "supported"
 UNSUPPORTED = "unsupported"
@@ -72,9 +85,13 @@ PROPERTY_UNITS: dict[str, str] = {
     "Wt": "mm3",
     "Iw": "mm6",
     "ym": "mm",
+    "Avy": "mm2",
+    "Avz": "mm2",
 }
 
-CONVENTION_PROPERTIES = ("It", "Wt", "Iw", "ym")
+CONVENTION_PROPERTIES = ("It", "Wt", "Iw", "ym", "Avy", "Avz")
+# Convention-dependent properties whose methods take the exact area A of the section as first argument.
+AREA_BASED_PROPERTIES = ("Avy", "Avz")
 
 # Exact method of every property that follows from the geometry alone; None = convention-dependent.
 _EXACT_METHODS: dict[str, str | None] = {
@@ -105,6 +122,8 @@ _EXACT_METHODS: dict[str, str | None] = {
     "Wt": None,
     "Iw": None,
     "ym": None,
+    "Avy": None,
+    "Avz": None,
 }
 
 # Exact method per (shape, property); None = convention-dependent (see CONVENTION_METHODS) or not published for the shape.
@@ -121,29 +140,40 @@ for _shape, _props in UNPUBLISHED_EXACT.items():
 # Implemented convention methods per (shape, property). Being implemented does NOT make a method
 # published: a series must opt in through its [conventions] table.
 CONVENTION_METHODS: dict[str, dict[str, dict[str, Callable[..., float]]]] = {
+    # Rolled I/H sections: It, Iw, and the shear area Avz (load parallel to the web); EN 1993-1-1 6.2.6(3) has no rule
+    # for rolled sections loaded parallel to the flanges (Avy).
     "I": {
         "It": {IT_ROLLED_I_FILLET: it_rolled_i_fillet_v1},
         "Iw": {IW_I_FLANGES: iw_i_flanges_v1},
+        "Avz": {AV_ROLLED_I: avz_rolled_i_en1993_v1},
     },
     "SHS": {
         "It": {IT_HOLLOW_EN: it_shs_en_v1},
         "Wt": {IT_HOLLOW_EN: wt_shs_en_v1},
+        "Avy": {AV_RHS: avy_shs_en1993_v1},
+        "Avz": {AV_RHS: avz_shs_en1993_v1},
     },
     "RHS": {
         "It": {IT_HOLLOW_EN: it_rhs_en_v1},
         "Wt": {IT_HOLLOW_EN: wt_rhs_en_v1},
+        "Avy": {AV_RHS: avy_rhs_en1993_v1},
+        "Avz": {AV_RHS: avz_rhs_en1993_v1},
     },
     "CHS": {
         "It": {IT_CHS_EXACT: it_chs_exact_v1},
         "Wt": {IT_CHS_EXACT: wt_chs_exact_v1},
+        "Avy": {AV_CHS: av_chs_en1993_v1},
+        "Avz": {AV_CHS: av_chs_en1993_v1},
     },
-    # Channels with parallel flanges: It. Sloped flanges, and Wt, Iw, ym of every channel: no documented convention.
+    # Channels with parallel flanges: It and Avz. Sloped flanges (their shear areas by 6.2.6(3) a, b do not reproduce
+    # the printed values), and Wt, Iw, ym, Avy of every channel: no documented convention.
     "U": {
         "It": {IT_ROLLED_U_FILLET: it_rolled_u_fillet_v1},
+        "Avz": {AV_ROLLED_U: avz_rolled_u_en1993_v1},
     },
     "U_TAPERED": {},
     "I_TAPERED": {},
-    # Angles: It. Wt, Iw and the shear centre ym: no documented convention.
+    # Angles: It. Wt, Iw, the shear centre ym and the shear areas: no documented convention.
     "L_EQ": {
         "It": {IT_ROLLED_L_FILLET: it_rolled_l_eq_fillet_v1},
     },
@@ -151,7 +181,7 @@ CONVENTION_METHODS: dict[str, dict[str, dict[str, Callable[..., float]]]] = {
         "It": {IT_ROLLED_L_FILLET: it_rolled_l_fillet_v1},
     },
     # Flat bars: the exact St Venant constant of a solid rectangle is an infinite series, the thin-strip b·t³/3 an
-    # approximation; no documented convention for It, Wt, Iw or ym.
+    # approximation; no documented convention for It, Wt, Iw, ym or the shear areas.
     "FLAT": {},
 }
 

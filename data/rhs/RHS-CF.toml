@@ -18,3 +18,5 @@ aliases = ["RHS{h}x{b}x{t}"]
 [conventions]
 It = { method = "IT_HOLLOW_EN_V1" }
 Wt = { method = "IT_HOLLOW_EN_V1" }
+Avy = { method = "AV_RHS_EN1993_V1" }
+Avz = { method = "AV_RHS_EN1993_V1" }
