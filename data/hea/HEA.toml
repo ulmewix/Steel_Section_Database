@@ -15,3 +15,4 @@ aliases = ["HE {n} A", "HEA{n}"]
 [conventions]
 It = { method = "IT_ROLLED_I_FILLET_V1" }
 Iw = { method = "IW_I_FLANGES_V1" }
+Avz = { method = "AV_ROLLED_I_EN1993_V1" }

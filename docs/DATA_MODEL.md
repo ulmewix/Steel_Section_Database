@@ -40,7 +40,7 @@ series.
 | `corner_radii` | shapes `SHS`, `RHS` only (required there): rule of the corner radii, `EN10210-2` or `EN10219-2` (see below) |
 | `[corner_radii_overrides]` | shapes `SHS`, `RHS` only, optional: `"<designation>" = "<reason>"` for rows whose explicit ro/ri override the rule |
 | `[designation]` | `pattern` (e.g. `"IPE {h}"`) and `aliases` |
-| `[conventions]` | optional: convention-dependent properties this series publishes (It, Wt, Iw, ym), e.g. `It = { method = "IT_ROLLED_I_FILLET_V1" }`. Absent = `unsupported` (null). The method must be implemented for the shape — see [CONVENTIONS.md](CONVENTIONS.md) |
+| `[conventions]` | optional: convention-dependent properties this series publishes (It, Wt, Iw, ym, Avy, Avz), e.g. `It = { method = "IT_ROLLED_I_FILLET_V1" }`. Absent = `unsupported` (null). The method must be implemented for the shape — see [CONVENTIONS.md](CONVENTIONS.md) |
 
 ### `standard`
 
@@ -359,7 +359,7 @@ section, and its thickness t along y — unlike the other shapes, whose width b 
 choice of the orientation of use by the consuming application, not a second set of data. The frame fixes the meaning of the
 published Iy, Iz, Wel, Wpl and i of the flat bars. Feasibility: b > 0, t > 0, nothing else (a square or a bar thicker than
 wide is a valid rectangle; the data have b > t). Every property is the closed form of the rectangle (A = b·t,
-Iy = t·b³/12, Wpl,y = t·b²/4, …; checked against `tests/flat_reference.py`). It, Wt, Iw and ym are unsupported
+Iy = t·b³/12, Wpl,y = t·b²/4, …; checked against `tests/flat_reference.py`). It, Wt, Iw, ym, Avy and Avz are unsupported
 ([CONVENTIONS.md](CONVENTIONS.md#unsupported-properties)).
 
 Never stored (derivable): mass, A, I, W, Wpl, i, It, surface.

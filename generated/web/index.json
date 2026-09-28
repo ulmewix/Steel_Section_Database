@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "generator": {"package": "section_properties", "version": "0.1.0"},
   "series": [
     {"id": "CHS-CF", "file": "CHS-CF.json", "shape": "CHS", "profiles": 230},

@@ -244,9 +244,10 @@ def test_web_schema_enforces_hollow_fields(outputs):
 # schema's const, the generated files, docs/CONVENTIONS.md) and a new entry here.
 WEB_CONTRACT_FINGERPRINTS = {
     1: "73f3104b9306cdc6b181ee73de659eaabaac9f96dea3b1ca96157e4752a0d53b",
+    2: "874e1242e3fb466dca82aa5bfb02fff8c2769c14f38fa019fbef72c11bcab2b5",  # v1 + the shear areas Avy, Avz
 }
 _INDEX_LAYOUT = (["schema_version", "generator", "series"], ["package", "version"], ["id", "file", "shape", "profiles"])
-WEB_INDEX_LAYOUT = {1: _INDEX_LAYOUT}
+WEB_INDEX_LAYOUT = {1: _INDEX_LAYOUT, 2: _INDEX_LAYOUT}
 
 
 def _schema_fingerprint(schema: dict) -> str:
@@ -268,7 +269,7 @@ def test_web_contract_version_is_consistent(all_series, outputs):
     from section_properties.export import WEB_SCHEMA_VERSION
 
     schema = json.loads((REPO_ROOT / "schema" / "web.schema.json").read_text(encoding="utf-8"))
-    assert WEB_SCHEMA_VERSION == 1 == schema["properties"]["schema_version"]["const"]
+    assert WEB_SCHEMA_VERSION == 2 == schema["properties"]["schema_version"]["const"]
     web = [name for name in outputs if name.startswith("web/")]
     assert "web/index.json" in web and len(web) == len(all_series) + 1
     for name in web:
@@ -484,7 +485,7 @@ def test_flat_series_contract(outputs):
     geometry echoed as b, t; no corner_radii; the bar stands on edge, y-y is the strong axis (alpha = 0, Iu = Iy,
     Iv = Iz)."""
     document = json.loads(outputs["web/FLAT.json"], parse_float=Decimal, parse_int=Decimal)
-    assert document["shape"] == "FLAT" and document["schema_version"] == 1 and "corner_radii" not in document
+    assert document["shape"] == "FLAT" and document["schema_version"] == 2 and "corner_radii" not in document
     meta = document["properties_meta"]
     for name in ("It", "Wt", "Iw", "ym"):
         assert meta[name] == {"status": "unsupported", "method": None}
